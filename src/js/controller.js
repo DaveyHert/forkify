@@ -52,12 +52,17 @@ const controlPagination = function (goto) {
   controlServings();
 };
 
-// const controlServings = function(){
-//   model.state.recipe.serv
-// }
+const controlServings = function (serving) {
+  // update servings
+  recipeView.updateServings(serving);
+  // render recipe
+  recipeView.render(model.state.recipe);
+  console.log('Servings Updated');
+};
 
 const init = function () {
   recipeView.addHandlerRenderer(controlRecipe);
+  recipeView.addHandlerUpdateServings(controlServings);
   searchView.addHandlerSearch(controlSearch);
   paginationView.addHandlerClick(controlPagination);
 };

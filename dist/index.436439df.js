@@ -504,11 +504,16 @@ const controlPagination = function(goto) {
     _paginationViewJsDefault.default.render(_modelJs.state.search);
     controlServings();
 };
-// const controlServings = function(){
-//   model.state.recipe.serv
-// }
+const controlServings = function(serving) {
+    // update servings
+    _recipeViewJsDefault.default.updateServings(serving);
+    // render recipe
+    _recipeViewJsDefault.default.render(_modelJs.state.recipe);
+    console.log('Servings Updated');
+};
 const init = function() {
     _recipeViewJsDefault.default.addHandlerRenderer(controlRecipe);
+    _recipeViewJsDefault.default.addHandlerUpdateServings(controlServings);
     _searchViewJsDefault.default.addHandlerSearch(controlSearch);
     _paginationViewJsDefault.default.addHandlerClick(controlPagination);
 };
@@ -524,8 +529,6 @@ parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe
 parcelHelpers.export(exports, "LoadSearchResults", ()=>LoadSearchResults
 );
 parcelHelpers.export(exports, "getSearchResultPage", ()=>getSearchResultPage
-);
-parcelHelpers.export(exports, "updateServings", ()=>updateServings
 );
 var _regeneratorRuntime = require("regenerator-runtime");
 var _configJs = require("./config.js");
@@ -584,15 +587,7 @@ const getSearchResultPage = function(page = state.search.page) {
     state.search.page = page;
     const start = (page - 1) * state.search.resultsPerPage;
     const end = page * state.search.resultsPerPage;
-    console.log(state);
     return state.search.result.slice(start, end);
-};
-const updateServings = function(newServings) {
-    state.recipe.ingredients.forEach((ing)=>{
-        ing.quantity = ing.quantity * newServings / state.recipe.servings;
-        console.log(ing.quantity);
-    });
-    state.recipe.servings = newServings;
 };
 
 },{"regenerator-runtime":"cH8Iq","./config.js":"beA2m","./helpers.js":"9l3Yy","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"cH8Iq":[function(require,module,exports) {
@@ -12927,6 +12922,7 @@ var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 var _fractional = require("fractional");
 var _viewJs = require("./View.js");
 var _viewJsDefault = parcelHelpers.interopDefault(_viewJs);
+var _modelJs = require("../model.js");
 class RecipeView extends _viewJsDefault.default {
     _parentElement = document.querySelector('.recipe');
     _errorMessage = 'No recipes found for your query. Please try again';
@@ -12940,15 +12936,39 @@ class RecipeView extends _viewJsDefault.default {
         );
     }
     _generateMarkup() {
-        return `\n      <figure class="recipe__fig">\n        <img src="${this._data.image}" crossorigin="anonymous" alt="${this._data.title}" class="recipe__img" />\n        <h1 class="recipe__title">\n          <span>${this._data.title}</span>\n        </h1>\n    </figure>\n\n    <div class="recipe__details">\n      <div class="recipe__info">\n        <svg class="recipe__info-icon">\n          <use href="${_iconsSvgDefault.default}#icon-clock"></use>\n        </svg>\n        <span class="recipe__info-data recipe__info-data--minutes">${this._data.cookingTime}</span>\n        <span class="recipe__info-text">minutes</span>\n      </div>\n      <div class="recipe__info">\n        <svg class="recipe__info-icon">\n          <use href="${_iconsSvgDefault.default}#icon-users"></use>\n        </svg>\n        <span class="recipe__info-data recipe__info-data--people">${this._data.servings}</span>\n        <span class="recipe__info-text">servings</span>\n\n        <div class="recipe__info-buttons">\n          <button class="btn--tiny btn--increase-servings">\n            <svg>\n              <use href="${_iconsSvgDefault.default}#icon-minus-circle"></use>\n            </svg>\n          </button>\n          <button class="btn--tiny btn--increase-servings">\n            <svg>\n              <use href="${_iconsSvgDefault.default}#icon-plus-circle"></use>\n            </svg>\n          </button>\n        </div>\n      </div>\n\n      <div class="recipe__user-generated">\n        <svg>\n          <use href="${_iconsSvgDefault.default}#icon-user"></use>\n        </svg>\n      </div>\n      <button class="btn--round">\n        <svg class="">\n          <use href="${_iconsSvgDefault.default}#icon-bookmark-fill"></use>\n        </svg>\n      </button>\n    </div>\n\n    <div class="recipe__ingredients">\n      <h2 class="heading--2">Recipe ingredients</h2>\n      <ul class="recipe__ingredient-list">${this._data.ingredients.map(this._generateMarkupIngredient).join('')}\n      </ul>\n    </div>\n\n    <div class="recipe__directions">\n      <h2 class="heading--2">How to cook it</h2>\n      <p class="recipe__directions-text">\n        This recipe was carefully designed and tested by\n        <span class="recipe__publisher">${this._data.publisher}</span>. Please check out\n        directions at their website.\n      </p>\n      <a\n        class="btn--small recipe__btn"\n        href="${this._data.sourceURL}"\n        target="_blank"\n      >\n        <span>Directions</span>\n        <svg class="search__icon">\n          <use href="${_iconsSvgDefault.default}#icon-arrow-right"></use>\n        </svg>\n      </a>\n    </div>\n`;
+        return `\n      <figure class="recipe__fig">\n        <img src="${this._data.image}" crossorigin="anonymous" alt="${this._data.title}" class="recipe__img" />\n        <h1 class="recipe__title">\n          <span>${this._data.title}</span>\n        </h1>\n    </figure>\n\n    <div class="recipe__details">\n      <div class="recipe__info">\n        <svg class="recipe__info-icon">\n          <use href="${_iconsSvgDefault.default}#icon-clock"></use>\n        </svg>\n        <span class="recipe__info-data recipe__info-data--minutes">${this._data.cookingTime}</span>\n        <span class="recipe__info-text">minutes</span>\n      </div>\n      <div class="recipe__info">\n        <svg class="recipe__info-icon">\n          <use href="${_iconsSvgDefault.default}#icon-users"></use>\n        </svg>\n        <span class="recipe__info-data recipe__info-data--people">${this._data.servings}</span>\n        <span class="recipe__info-text">servings</span>\n\n        <div class="recipe__info-buttons">\n          <button class="btn--tiny btn--decrease-servings">\n            <svg>\n              <use href="${_iconsSvgDefault.default}#icon-minus-circle"></use>\n            </svg>\n          </button>\n          <button class="btn--tiny btn--increase-servings">\n            <svg>\n              <use href="${_iconsSvgDefault.default}#icon-plus-circle"></use>\n            </svg>\n          </button>\n        </div>\n      </div>\n\n      <div class="recipe__user-generated">\n        <svg>\n          <use href="${_iconsSvgDefault.default}#icon-user"></use>\n        </svg>\n      </div>\n      <button class="btn--round">\n        <svg class="">\n          <use href="${_iconsSvgDefault.default}#icon-bookmark-fill"></use>\n        </svg>\n      </button>\n    </div>\n\n    <div class="recipe__ingredients">\n      <h2 class="heading--2">Recipe ingredients</h2>\n      <ul class="recipe__ingredient-list">${this._data.ingredients.map(this._generateMarkupIngredient).join('')}\n      </ul>\n    </div>\n\n    <div class="recipe__directions">\n      <h2 class="heading--2">How to cook it</h2>\n      <p class="recipe__directions-text">\n        This recipe was carefully designed and tested by\n        <span class="recipe__publisher">${this._data.publisher}</span>. Please check out\n        directions at their website.\n      </p>\n      <a\n        class="btn--small recipe__btn"\n        href="${this._data.sourceURL}"\n        target="_blank"\n      >\n        <span>Directions</span>\n        <svg class="search__icon">\n          <use href="${_iconsSvgDefault.default}#icon-arrow-right"></use>\n        </svg>\n      </a>\n    </div>\n`;
     }
     _generateMarkupIngredient(ing) {
         return `\n          <li class="recipe__ingredient">\n          <svg class="recipe__icon">\n            <use href="${_iconsSvgDefault.default}#icon-check"></use>\n          </svg>\n          <div class="recipe__quantity">${ing.quantity ? new _fractional.Fraction(ing.quantity).toString() : ''}</div>\n          <div class="recipe__description">\n            <span class="recipe__unit">${ing.unit}</span>\n            ${ing.description}\n          </div>\n        </li>\n      `;
     }
+    updateServings(newServings) {
+        console.log(newServings);
+        _modelJs.state.recipe.ingredients.forEach((ing)=>{
+            ing.quantity = ing.quantity * newServings / _modelJs.state.recipe.servings;
+        });
+        _modelJs.state.recipe.servings = newServings;
+    }
+    addHandlerUpdateServings(handler) {
+        this._parentElement.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn--tiny');
+            if (!btn) return;
+            console.log(_modelJs.state.recipe);
+            let curServing = _modelJs.state.recipe.servings;
+            console.log(curServing);
+            if (btn.classList.contains('btn--decrease-servings')) {
+                curServing--;
+                handler(curServing);
+            }
+            if (btn.classList.contains('btn--increase-servings')) {
+                curServing++;
+                handler(curServing);
+            }
+        });
+    }
 }
 exports.default = new RecipeView();
 
-},{"url:../../img/icons.svg":"iwCpK","fractional":"40qvl","./View.js":"8rtS4","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"iwCpK":[function(require,module,exports) {
+},{"url:../../img/icons.svg":"iwCpK","fractional":"40qvl","./View.js":"8rtS4","../model.js":"6Yfb5","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"iwCpK":[function(require,module,exports) {
 module.exports = require('./helpers/bundle-url').getBundleURL('8LZRF') + "icons.c097e590.svg";
 
 },{"./helpers/bundle-url":"8YnfL"}],"8YnfL":[function(require,module,exports) {
@@ -13331,8 +13351,6 @@ class PaginationView extends _viewJsDefault.default {
     _generateMarkup() {
         const curPage = this._data.page;
         const numPages = Math.ceil(this._data.result.length / this._data.resultsPerPage);
-        console.log(this._data);
-        console.log(numPages);
         // chech if on first page and there are other pages
         if (curPage === 1 && numPages > 1) return `\n        <button data-goto="${curPage + 1}" class="btn--inline pagination__btn--next">\n            <span>Page ${curPage + 1}</span>\n            <svg class="search__icon">\n              <use href="${_iconsSvgDefault.default}#icon-arrow-right"></use>\n            </svg>\n          </button> \n          `;
         // Check if on first page and no other pages

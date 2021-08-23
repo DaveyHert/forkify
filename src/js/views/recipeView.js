@@ -1,6 +1,7 @@
 import icons from 'url:../../img/icons.svg';
 import { Fraction } from 'fractional';
 import Views from './View.js';
+import { state } from '../model.js';
 
 class RecipeView extends Views {
   _parentElement = document.querySelector('.recipe');
@@ -42,7 +43,7 @@ class RecipeView extends Views {
         <span class="recipe__info-text">servings</span>
 
         <div class="recipe__info-buttons">
-          <button class="btn--tiny btn--increase-servings">
+          <button class="btn--tiny btn--decrease-servings">
             <svg>
               <use href="${icons}#icon-minus-circle"></use>
             </svg>
@@ -113,6 +114,34 @@ class RecipeView extends Views {
           </div>
         </li>
       `;
+  }
+
+  updateServings(newServings) {
+    console.log(newServings);
+    state.recipe.ingredients.forEach(ing => {
+      ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
+    });
+
+    state.recipe.servings = newServings;
+  }
+
+  addHandlerUpdateServings(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      const btn = e.target.closest('.btn--tiny');
+      if (!btn) return;
+      console.log(state.recipe);
+
+      let curServing = state.recipe.servings;
+      console.log(curServing);
+      if (btn.classList.contains('btn--decrease-servings')) {
+        curServing--;
+        handler(curServing);
+      }
+      if (btn.classList.contains('btn--increase-servings')) {
+        curServing++;
+        handler(curServing);
+      }
+    });
   }
 }
 
