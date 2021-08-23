@@ -499,11 +499,14 @@ const controlSearch = async function() {
     }
 };
 const controlPagination = function(goto) {
-    console.log(goto);
     _resultsViewJsDefault.default.render(_modelJs.getSearchResultPage(goto));
     // render pagination
     _paginationViewJsDefault.default.render(_modelJs.state.search);
+    controlServings();
 };
+// const controlServings = function(){
+//   model.state.recipe.serv
+// }
 const init = function() {
     _recipeViewJsDefault.default.addHandlerRenderer(controlRecipe);
     _searchViewJsDefault.default.addHandlerSearch(controlSearch);
@@ -521,6 +524,8 @@ parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe
 parcelHelpers.export(exports, "LoadSearchResults", ()=>LoadSearchResults
 );
 parcelHelpers.export(exports, "getSearchResultPage", ()=>getSearchResultPage
+);
+parcelHelpers.export(exports, "updateServings", ()=>updateServings
 );
 var _regeneratorRuntime = require("regenerator-runtime");
 var _configJs = require("./config.js");
@@ -579,7 +584,15 @@ const getSearchResultPage = function(page = state.search.page) {
     state.search.page = page;
     const start = (page - 1) * state.search.resultsPerPage;
     const end = page * state.search.resultsPerPage;
+    console.log(state);
     return state.search.result.slice(start, end);
+};
+const updateServings = function(newServings) {
+    state.recipe.ingredients.forEach((ing)=>{
+        ing.quantity = ing.quantity * newServings / state.recipe.servings;
+        console.log(ing.quantity);
+    });
+    state.recipe.servings = newServings;
 };
 
 },{"regenerator-runtime":"cH8Iq","./config.js":"beA2m","./helpers.js":"9l3Yy","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"cH8Iq":[function(require,module,exports) {
