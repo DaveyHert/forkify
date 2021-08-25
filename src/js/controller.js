@@ -7,6 +7,7 @@ import searchView from './views/searchView.js';
 import ResultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
 import Views from './views/View.js';
+import resultsView from './views/resultsView.js';
 
 // https://forkify-api.herokuapp.com/v2
 
@@ -19,6 +20,9 @@ const controlRecipe = async function () {
     if (!id) return;
     // Load Spinner
     recipeView.spinner();
+
+    // Activate active class
+    resultsView.update(model.getSearchResultPage());
     // load recipe from model
     await model.loadRecipe(id);
     // Render recipe
@@ -37,7 +41,7 @@ const controlSearch = async function () {
 
     await model.LoadSearchResults(query);
     // console.log(model.state.search);
-    ResultsView.render(model.getSearchResultPage(1));
+    ResultsView.render(model.getSearchResultPage());
 
     // render pagination
     paginationView.render(model.state.search);

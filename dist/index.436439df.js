@@ -478,6 +478,8 @@ const controlRecipe = async function() {
         if (!id) return;
         // Load Spinner
         _recipeViewJsDefault.default.spinner();
+        // Activate active class
+        _resultsViewJsDefault.default.update(_modelJs.getSearchResultPage());
         // load recipe from model
         await _modelJs.loadRecipe(id);
         // Render recipe
@@ -493,7 +495,7 @@ const controlSearch = async function() {
         if (!query) return;
         await _modelJs.LoadSearchResults(query);
         // console.log(model.state.search);
-        _resultsViewJsDefault.default.render(_modelJs.getSearchResultPage(1));
+        _resultsViewJsDefault.default.render(_modelJs.getSearchResultPage());
         // render pagination
         _paginationViewJsDefault.default.render(_modelJs.state.search);
     } catch (err) {
@@ -13284,7 +13286,6 @@ class Views {
         this._parentElement.insertAdjacentHTML('afterbegin', markup);
     }
     update(data) {
-        if (!data || Array.isArray(data) && data.length === 0) return this.renderError();
         this._data = data;
         const newMarkup = this._generateMarkup();
         const newDOM = document.createRange().createContextualFragment(newMarkup);
@@ -13292,12 +13293,12 @@ class Views {
         const curElements = Array.from(this._parentElement.querySelectorAll('*'));
         newElements.forEach((newEl, i)=>{
             const curEl = curElements[i];
-            // console.log(curEl, newEl.isEqualNode(curEl));
-            // if (!newEl.isEqualNode(curEl) && newEl.nodeValue('') === 'text') {
-            //   console.log('Mad oh');
-            // }
-            console.log(newEl.firstChild?.nodeName);
+            // Check if newEl is different from curEl and it acually has content
             if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== '') curEl.textContent = newEl.textContent;
+            // set the attributes on the curEl
+            if (!newEl.isEqualNode(curEl)) Array.from(newEl.attributes).forEach((attr)=>{
+                curEl.setAttribute(attr.name, attr.value);
+            });
         });
     }
 }
@@ -13343,7 +13344,8 @@ class ResultsView extends _viewJsDefault.default {
         return this._data.map(this._generateMarkupPreview).join('');
     }
     _generateMarkupPreview(result) {
-        return `\n      <li class="preview">\n          <a class="preview__link" href="#${result.id}">\n              <figure class="preview__fig">\n              <img crossorigin="anonymous" src="${result.image}" alt="${result.title}" />\n              </figure>\n              <div class="preview__data">\n                  <h4 class="preview__title">${result.title}</h4>\n                  <p class="preview__publisher">${result.publisher}</p>\n              <div class="preview__user-generated">\n                  <svg>\n                  <use href="${_iconsSvgDefault.default}#icon-user"></use>\n                  </svg>\n              </div>\n              </div>\n          </a>\n      </li>\n        `;
+        const id = window.location.hash.slice(1);
+        return `\n      <li class="preview">\n          <a class="preview__link ${result.id === id ? 'preview__link--active' : ''}" href="#${result.id}">\n              <figure class="preview__fig">\n              <img crossorigin="anonymous" src="${result.image}" alt="${result.title}" />\n              </figure>\n              <div class="preview__data">\n                  <h4 class="preview__title">${result.title}</h4>\n                  <p class="preview__publisher">${result.publisher}</p>\n              <div class="preview__user-generated">\n                  <svg>\n                  <use href="${_iconsSvgDefault.default}#icon-user"></use>\n                  </svg>\n              </div>\n              </div>\n          </a>\n      </li>\n        `;
     }
 }
 exports.default = new ResultsView();

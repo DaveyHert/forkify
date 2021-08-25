@@ -61,9 +61,6 @@ export default class Views {
   }
 
   update(data) {
-    if (!data || (Array.isArray(data) && data.length === 0))
-      return this.renderError();
-
     this._data = data;
     const newMarkup = this._generateMarkup();
 
@@ -74,17 +71,19 @@ export default class Views {
     newElements.forEach((newEl, i) => {
       const curEl = curElements[i];
 
-      // console.log(curEl, newEl.isEqualNode(curEl));
-
-      // if (!newEl.isEqualNode(curEl) && newEl.nodeValue('') === 'text') {
-      //   console.log('Mad oh');
-      // }
-      console.log(newEl.firstChild?.nodeName);
+      // Check if newEl is different from curEl and it acually has content
       if (
         !newEl.isEqualNode(curEl) &&
         newEl.firstChild?.nodeValue.trim() !== ''
       ) {
         curEl.textContent = newEl.textContent;
+      }
+
+      // set the attributes on the curEl
+      if (!newEl.isEqualNode(curEl)) {
+        Array.from(newEl.attributes).forEach(attr => {
+          curEl.setAttribute(attr.name, attr.value);
+        });
       }
     });
   }
