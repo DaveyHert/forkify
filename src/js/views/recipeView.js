@@ -43,13 +43,17 @@ class RecipeView extends Views {
         <span class="recipe__info-text">servings</span>
 
         <div class="recipe__info-buttons">
-          <button class="btn--tiny btn--decrease-servings">
+          <button class="btn--tiny btn--update-servings" data-update-to=${
+            this._data.servings - 1
+          }>
             <svg>
               <use href="${icons}#icon-minus-circle"></use>
             </svg>
           </button>
-          <button class="btn--tiny btn--increase-servings">
-            <svg>
+          <button class="btn--tiny btn--update-servings" data-update-to=${
+            this._data.servings + 1
+          }>
+            <svg>update
               <use href="${icons}#icon-plus-circle"></use>
             </svg>
           </button>
@@ -117,7 +121,6 @@ class RecipeView extends Views {
   }
 
   updateServings(newServings) {
-    console.log(newServings);
     state.recipe.ingredients.forEach(ing => {
       ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
     });
@@ -127,20 +130,11 @@ class RecipeView extends Views {
 
   addHandlerUpdateServings(handler) {
     this._parentElement.addEventListener('click', function (e) {
-      const btn = e.target.closest('.btn--tiny');
+      const btn = e.target.closest('.btn--update-servings');
       if (!btn) return;
-      console.log(state.recipe);
 
-      let curServing = state.recipe.servings;
-      console.log(curServing);
-      if (btn.classList.contains('btn--decrease-servings')) {
-        curServing--;
-        handler(curServing);
-      }
-      if (btn.classList.contains('btn--increase-servings')) {
-        curServing++;
-        handler(curServing);
-      }
+      const updateTo = +btn.dataset.updateTo;
+      if (updateTo > 0) handler(updateTo);
     });
   }
 }

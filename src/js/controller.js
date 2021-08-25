@@ -6,6 +6,7 @@ import { async } from 'regenerator-runtime';
 import searchView from './views/searchView.js';
 import ResultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
+import Views from './views/View.js';
 
 // https://forkify-api.herokuapp.com/v2
 
@@ -52,12 +53,12 @@ const controlPagination = function (goto) {
   controlServings();
 };
 
-const controlServings = function (serving) {
+const controlServings = function (newServing) {
   // update servings
-  recipeView.updateServings(serving);
+  recipeView.updateServings(newServing);
   // render recipe
-  recipeView.render(model.state.recipe);
-  console.log('Servings Updated');
+  // recipeView.render(model.state.recipe);
+  recipeView.update(model.state.recipe);
 };
 
 const init = function () {
