@@ -583,6 +583,7 @@ const LoadSearchResults = async function(query) {
                 image: rec.image_url
             };
         });
+        state.search.page = 1;
     } catch (err) {
         throw err;
     }
@@ -13295,7 +13296,7 @@ class Views {
             const curEl = curElements[i];
             // Check if newEl is different from curEl and it acually has content
             if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== '') curEl.textContent = newEl.textContent;
-            // set the attributes on the curEl
+            // Update the changed attributes on the curEl
             if (!newEl.isEqualNode(curEl)) Array.from(newEl.attributes).forEach((attr)=>{
                 curEl.setAttribute(attr.name, attr.value);
             });

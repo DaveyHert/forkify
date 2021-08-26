@@ -79,7 +79,7 @@ export default class Views {
         curEl.textContent = newEl.textContent;
       }
 
-      // set the attributes on the curEl
+      // Update the changed attributes on the curEl
       if (!newEl.isEqualNode(curEl)) {
         Array.from(newEl.attributes).forEach(attr => {
           curEl.setAttribute(attr.name, attr.value);
