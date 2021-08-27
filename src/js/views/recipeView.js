@@ -68,7 +68,7 @@ class RecipeView extends Views {
       <button class="btn--round btn--bookmark">
         <svg class="">
           <use href="${icons}#icon-bookmark${
-      state.recipe.bookmarked ? '-fill' : ''
+      this._data.bookmarked ? '-fill' : ''
     }"></use>
         </svg>
       </button>
@@ -143,10 +143,8 @@ class RecipeView extends Views {
   addHandlerAddBookmark(handler) {
     this._parentElement.addEventListener('click', function (e) {
       const btn = e.target.closest('.btn--bookmark');
-      console.log(btn);
 
       if (!btn) return;
-
       handler();
     });
   }
