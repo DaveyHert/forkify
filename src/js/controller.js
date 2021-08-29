@@ -8,6 +8,7 @@ import ResultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
 import Views from './views/View.js';
 import resultsView from './views/resultsView.js';
+import bookmarksView from './views/bookmarkView.js';
 
 // https://forkify-api.herokuapp.com/v2
 
@@ -27,6 +28,9 @@ const controlRecipe = async function () {
     await model.loadRecipe(id);
     // Render recipe
     recipeView.render(model.state.recipe);
+
+    // update bookmarked recipe
+    bookmarksView.update(model.state.bookmarks);
   } catch (err) {
     recipeView.renderError();
   }
@@ -69,6 +73,8 @@ const controlAddBookmark = function () {
   if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
   else model.deleteBookmark(model.state.recipe.id);
   recipeView.update(model.state.recipe);
+
+  bookmarksView.render(model.state.bookmarks);
 };
 const init = function () {
   recipeView.addHandlerRenderer(controlRecipe);

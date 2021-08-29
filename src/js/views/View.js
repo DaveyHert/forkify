@@ -1,15 +1,21 @@
+import { mark } from 'regenerator-runtime';
 import icons from 'url:../../img/icons.svg';
 
 export default class Views {
   _data;
 
-  render(data) {
+  render(data, render = true) {
+    // Check if no data or data is an empty array
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
 
+    // store data in this object
     this._data = data;
     const markup = this._generateMarkup();
 
+    if (!render) return markup;
+
+    // Empty parent containe and insert generated markup
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
