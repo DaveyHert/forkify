@@ -1,6 +1,7 @@
 import { async } from 'regenerator-runtime';
 import { API_URL, RES_PER_PAGE } from './config.js';
 import { getJSON } from './helpers.js';
+import bookmarkView from './views/bookmarkView.js';
 
 export const state = {
   recipe: {},
@@ -71,12 +72,19 @@ export const getSearchResultPage = function (page = state.search.page) {
   return state.search.result.slice(start, end);
 };
 
+// Save Bookmark to local storage
+const persistBookmarks = function () {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+};
+
 export const addBookmark = function (recipe) {
   // add recipe to bookmark
   state.bookmarks.push(recipe);
 
   // Mark current recipe as bookmarked
   if (state.recipe.id === recipe.id) state.recipe.bookmarked = true;
+
+  persistBookmarks();
 };
 
 export const deleteBookmark = function (id) {
@@ -85,4 +93,17 @@ export const deleteBookmark = function (id) {
   state.bookmarks.splice(index, 1);
 
   if (state.recipe.id === id) state.recipe.bookmarked = false;
+
+  persistBookmarks();
 };
+
+// Load Bookmarks from LocalStorage on load
+const init = function () {
+  const savedData = JSON.parse(localStorage.getItem('bookmarks'));
+  if (!savedData) return;
+
+  state.bookmarks = savedData;
+  bookmarkView.render(state.bookmarks);
+};
+
+init();

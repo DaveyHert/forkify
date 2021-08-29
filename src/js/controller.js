@@ -84,3 +84,8 @@ const init = function () {
   paginationView.addHandlerClick(controlPagination);
 };
 init();
+
+const clearST = function () {
+  localStorage.clear();
+};
+// clearST();
