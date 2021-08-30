@@ -533,9 +533,9 @@ const init = function() {
     _paginationViewJsDefault.default.addHandlerClick(controlPagination);
 };
 init();
-const clearST = function() {
-    localStorage.clear();
-}; // clearST();
+const clearBookmarks = function() {
+    localStorage.clear('bookmarks');
+}; // clearBookmarks();
 
 },{"./model.js":"6Yfb5","core-js/stable":"eIyVg","regenerator-runtime":"cH8Iq","./views/recipeView.js":"9q0mt","./views/searchView.js":"51HTZ","./views/resultsView.js":"a6WEO","./views/paginationView.js":"c2v8w","./views/View.js":"8rtS4","./views/bookmarkView.js":"1r5Cz","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"6Yfb5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");

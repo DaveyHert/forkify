@@ -85,7 +85,7 @@ const init = function () {
 };
 init();
 
-const clearST = function () {
-  localStorage.clear();
+const clearBookmarks = function () {
+  localStorage.clear('bookmarks');
 };
-// clearST();
+// clearBookmarks();
