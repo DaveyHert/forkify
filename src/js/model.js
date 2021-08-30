@@ -1,7 +1,8 @@
 import { async } from 'regenerator-runtime';
 import { API_URL, RES_PER_PAGE } from './config.js';
 import { getJSON } from './helpers.js';
-import bookmarkView from './views/bookmarkView.js';
+import addRecipeView from './views/addRecipeView.js';
+import bookmarksView from './views/bookmarksView.js';
 
 export const state = {
   recipe: {},
@@ -103,7 +104,11 @@ const init = function () {
   if (!savedData) return;
 
   state.bookmarks = savedData;
-  bookmarkView.render(state.bookmarks);
+  bookmarksView.render(state.bookmarks);
 };
 
 init();
+
+// const addRecipe = function(){
+//   const
+// }
