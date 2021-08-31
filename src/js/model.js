@@ -106,9 +106,33 @@ const init = function () {
   state.bookmarks = savedData;
   bookmarksView.render(state.bookmarks);
 };
-
 init();
 
-// const addRecipe = function(){
-//   const
-// }
+export const uploadRecipe = async function (newRecipe) {
+  try {
+    console.log(newRecipe);
+
+    const dataArr = Object.entries(newRecipe);
+    console.log(dataArr);
+
+    const ingredients = dataArr
+      .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
+      .map(ing => {
+        const ingArr = ing[1].replaceAll(' ', '').split(',');
+        if (ingArr.length !== 3)
+          throw new Error(
+            'Wrong ingredient format, please use the right format'
+          );
+
+        const [quantity, unit, description] = ingArr;
+        return {
+          quantity,
+          unit,
+          description,
+        };
+      });
+    console.log(ingredients);
+  } catch (err) {
+    throw Error(err);
+  }
+};

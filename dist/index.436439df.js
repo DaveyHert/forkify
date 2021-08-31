@@ -528,8 +528,12 @@ const controlAddBookmark = function() {
     _recipeViewJsDefault.default.update(_modelJs.state.recipe);
     _bookmarksViewJsDefault.default.render(_modelJs.state.bookmarks);
 };
-const controlAddRecipe = function(data) {
-    console.log(data);
+const controlAddRecipe = async function(data) {
+    try {
+        await _modelJs.uploadRecipe(data);
+    } catch (err) {
+        _addRecipeViewJsDefault.default.renderMessage(err);
+    }
 };
 const init = function() {
     _recipeViewJsDefault.default.addHandlerRenderer(controlRecipe);
@@ -558,6 +562,8 @@ parcelHelpers.export(exports, "getSearchResultPage", ()=>getSearchResultPage
 parcelHelpers.export(exports, "addBookmark", ()=>addBookmark
 );
 parcelHelpers.export(exports, "deleteBookmark", ()=>deleteBookmark
+);
+parcelHelpers.export(exports, "uploadRecipe", ()=>uploadRecipe
 );
 var _regeneratorRuntime = require("regenerator-runtime");
 var _configJs = require("./config.js");
@@ -653,9 +659,28 @@ const init = function() {
     state.bookmarks = savedData;
     _bookmarksViewJsDefault.default.render(state.bookmarks);
 };
-init(); // const addRecipe = function(){
- //   const
- // }
+init();
+const uploadRecipe = async function(newRecipe) {
+    try {
+        console.log(newRecipe);
+        const dataArr = Object.entries(newRecipe);
+        console.log(dataArr);
+        const ingredients = dataArr.filter((entry)=>entry[0].startsWith('ingredient') && entry[1] !== ''
+        ).map((ing)=>{
+            const ingArr = ing[1].replaceAll(' ', '').split(',');
+            if (ingArr.length !== 3) throw new Error('Wrong ingredient format, please use the right format');
+            const [quantity, unit, description] = ingArr;
+            return {
+                quantity,
+                unit,
+                description
+            };
+        });
+        console.log(ingredients);
+    } catch (err) {
+        throw Error(err);
+    }
+};
 
 },{"regenerator-runtime":"cH8Iq","./config.js":"beA2m","./helpers.js":"9l3Yy","./views/addRecipeView.js":"4NyJt","./views/bookmarksView.js":"cUfi0","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"cH8Iq":[function(require,module,exports) {
 /**
